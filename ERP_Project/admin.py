@@ -14,18 +14,23 @@ class ProductoAdmin(admin.ModelAdmin):
 
 admin.site.register(Categoria)
 
-admin.site.register(Inventario)
+
+@admin.register(Inventario)
+class InventarioAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'cantidad')
+    list_display_links = ('producto', 'cantidad')
+    list_display_links_limit = 2
 
 
 @admin.register(Registro_de_altas)
 class Registro_de_altasAdmin(admin.ModelAdmin):
-    list_display = ('cantidad', 'fecha')
+    list_display = ('producto', 'cantidad', 'fecha')
     list_display_links = ('cantidad', 'fecha')
     list_display_links_limit = 2
 
 
 @admin.register(Registro_de_bajas)
 class Registro_de_bajasAdmin(admin.ModelAdmin):
-    list_display = ('cantidad', 'fecha')
+    list_display = ('producto', 'cantidad', 'fecha')
     list_display_links = ('cantidad', 'fecha')
     list_display_links_limit = 2

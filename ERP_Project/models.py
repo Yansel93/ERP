@@ -36,6 +36,7 @@ class Producto(models.Model):
             EAN = get_barcode_class('ean13')
             ean = EAN(str(random_number), writer=ImageWriter())
             barcode_image = ean.render()
+
             # Guarda la imagen del código de barras en el campo
             image_io = BytesIO()
             barcode_image.save(image_io, format='PNG')
@@ -50,19 +51,19 @@ class Producto(models.Model):
 
 # This is model of inventary
 class Inventario(models.Model):
-    produto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
 
 
 # This model is for taking the products that arrive at the warehouse
 class Registro_de_altas(models.Model):
-    produto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateField()
 
 
 # This model is for taking the products who are deregistered from the warehouse
 class Registro_de_bajas(models.Model):
-    produto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateField()
