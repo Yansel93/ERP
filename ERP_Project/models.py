@@ -5,6 +5,9 @@ from barcode.writer import ImageWriter
 from django.core.files.base import ContentFile
 from io import BytesIO
 
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=255)
@@ -55,15 +58,38 @@ class Inventario(models.Model):
     cantidad = models.IntegerField()
 
 
-# This model is for taking the products that arrive at the warehouse
+# This model is for taking the products who are deregistered from the warehouse
+class Registro_de_bajas(models.Model):
+    producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    fecha = models.DateField()
+
+
 class Registro_de_altas(models.Model):
     producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateField()
 
 
-# This model is for taking the products who are deregistered from the warehouse
-class Registro_de_bajas(models.Model):
-    producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-    fecha = models.DateField()
+@receiver(post_save, sender=Registro_de_altas)
+def actualizar_inventario_altas(sender, instance, created, **kwargs):
+    if created:
+        producto = instance.producto
+        cantidad = instance.cantidad
+
+        # Buscar o crear el registro de inventario
+        inventario, created = Inventario.objects.get_or_create(producto=producto)
+        inventario.cantidad += cantidad
+        inventario.save()
+
+
+@receiver(post_save, sender=Registro_de_bajas)
+def actualizar_inventario_bajas(sender, instance, created, **kwargs):
+    if created:
+        producto = instance.producto
+        cantidad = instance.cantidad
+
+        # Buscar o crear el registro de inventario
+        inventario, created = Inventario.objects.get_or_create(producto=producto)
+        inventario.cantidad -= cantidad
+        inventario.save()

@@ -25,7 +25,7 @@ class InventarioAdmin(admin.ModelAdmin):
 @admin.register(Registro_de_altas)
 class Registro_de_altasAdmin(admin.ModelAdmin):
     list_display = ('producto', 'cantidad', 'fecha')
-    list_display_links = ('cantidad', 'fecha')
+    list_display_links = ('cantidad', 'producto')
     list_display_links_limit = 2
 
 
