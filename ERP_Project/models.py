@@ -1,12 +1,11 @@
 import random
 from django.db import models
+from django.db.models.signals import post_save
 from barcode import get_barcode_class
 from barcode.writer import ImageWriter
 from django.core.files.base import ContentFile
 from io import BytesIO
-
 from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 
 class Categoria(models.Model):
@@ -23,6 +22,7 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, null=True, on_delete=models.CASCADE)
     codigo = models.CharField(max_length=255, null=True, blank=True)
     codigo_barra = models.ImageField(upload_to='codigos_barra', null=True, blank=True)
+    codigo_barra_number = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -38,6 +38,7 @@ class Producto(models.Model):
             # Generar el código de barras
             EAN = get_barcode_class('ean13')
             ean = EAN(str(random_number), writer=ImageWriter())
+            self.codigo_barra_number = ean
             barcode_image = ean.render()
 
             # Guarda la imagen del código de barras en el campo
