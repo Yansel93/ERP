@@ -27,6 +27,13 @@ class Producto(models.Model):
         (10, '10%'),
         (21, '21%')
     )
+    TIPO_UNIDADES = (
+        ('Gr', 'Gr'),
+        ('Kg', 'Kg'),
+        ('Ml', 'Ml'),
+        ('Lt', 'Lt'),
+        ('Cl', 'CL')
+    )
     nombre = models.CharField(max_length=255)
     abreviaciones = models.CharField(max_length=10)
     categoria = models.ForeignKey(Categoria, null=True, on_delete=models.CASCADE)
@@ -34,6 +41,7 @@ class Producto(models.Model):
     codigo_barra = models.ImageField(upload_to='codigos_barra', null=True, blank=True)
     codigo_barra_number = models.CharField(max_length=255, null=True, blank=True)
     iba = models.IntegerField(choices=TIPO_CHOICES)
+    unidad_medida = models.CharField(choices=TIPO_UNIDADES, max_length=10)
 
     def __str__(self):
         return self.nombre
@@ -66,16 +74,9 @@ class Producto(models.Model):
 
 # This is model of inventary
 class Inventario(models.Model):
-    TIPO_UNIDADES = (
-        ('Gr', 'Gr'),
-        ('Kg', 'Kg'),
-        ('Ml', 'Ml'),
-        ('Lt', 'Lt'),
-        ('Cl', 'CL')
-    )
     producto = models.ForeignKey(Producto, null=True, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=0)
-    unidad_medida = models.CharField(choices=TIPO_UNIDADES, max_length=10)
+
 
 
 # This model is for taking the products who are deregistered from the warehouse
@@ -124,3 +125,10 @@ def actualizar_inventario_bajas(sender, instance, created, **kwargs):
         inventario.save()
 
 
+@receiver(post_save, sender=Producto)
+def crear_registro_inventario(sender, instance, created, **kwargs):
+    if created:
+        Inventario.objects.create(
+            producto=instance,
+            cantidad=0
+        )

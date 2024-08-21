@@ -6,8 +6,8 @@ from .models import Producto, Categoria, Inventario, Registro_de_altas, Registro
 
 # Register your models here.
 class ProductoAdmin(admin.ModelAdmin):
-    fields = ['nombre', 'abreviaciones', 'categoria', 'iba']
-    list_display = ('nombre', 'abreviaciones', 'categoria', 'mostrar_iba', 'codigo', 'codigo_barra')
+    fields = ['nombre', 'abreviaciones', 'categoria', 'iba', 'unidad_medida']
+    list_display = ('nombre', 'abreviaciones', 'categoria', 'mostrar_iba', 'codigo', 'codigo_barra',)
     list_display_links = ('nombre', 'abreviaciones')
     list_filter = ('nombre',)
     search_fields = ('nombre',)
@@ -46,7 +46,7 @@ class InventarioAdmin(admin.ModelAdmin):
     mostrar_iba.short_description = "IBA (%)"
 
     def mostrar_UM(self, obj):
-        return f"{obj.unidad_medida}"
+        return f"{obj.producto.unidad_medida}"
 
     mostrar_UM.short_description = "UM"
 
