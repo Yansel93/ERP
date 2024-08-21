@@ -21,7 +21,16 @@ class ProductoAdmin(admin.ModelAdmin):
 
 admin.site.register(Producto, ProductoAdmin)
 
-admin.site.register(Categoria)
+
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nombre',)
+    list_display_links = ('nombre',)
+    list_filter = ('nombre',)
+    search_fields = ('nombre',)
+    list_display_links_limit = 1
+
+
+admin.site.register(Categoria, CategoriaAdmin)
 
 
 class InventarioAdmin(admin.ModelAdmin):
@@ -46,8 +55,8 @@ admin.site.register(Inventario, InventarioAdmin)
 
 
 class Registro_de_altasAdmin(admin.ModelAdmin):
-    fields = ['producto', 'cantidad','valor_unitario', 'fecha']
-    list_display = ('producto', 'cantidad', 'get_iba_display', 'fecha','valor_unitario', 'importe_total')
+    fields = ['producto', 'cantidad', 'valor_unitario', 'fecha']
+    list_display = ('producto', 'cantidad', 'get_iba_display', 'fecha', 'valor_unitario', 'importe_total')
     list_display_links = ('cantidad', 'producto')
     list_filter = ('producto', 'fecha')
     search_fields = ('producto__nombre',)
@@ -62,12 +71,12 @@ class Registro_de_altasAdmin(admin.ModelAdmin):
 admin.site.register(Registro_de_altas, Registro_de_altasAdmin)
 
 
-
 class Registro_de_bajasAdmin(admin.ModelAdmin):
     list_display = ('producto', 'cantidad', 'fecha')
     list_display_links = ('cantidad', 'fecha')
     list_filter = ('producto', 'fecha')
     search_fields = ('producto__nombre',)
     list_display_links_limit = 2
+
 
 admin.site.register(Registro_de_bajas, Registro_de_bajasAdmin)
